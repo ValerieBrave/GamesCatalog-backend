@@ -1,8 +1,8 @@
-import { ConnectionOptions } from "typeorm";
-import {User} from "../entities/user"
-import  dotenv  from 'dotenv'
+import { ConnectionOptions } from 'typeorm';
+import { User } from '../entities/user';
+import dotenv from 'dotenv';
 
-dotenv.config()
+dotenv.config();
 
 export const app_config = {
   port: process.env.PORT || process.env.APP_PORT,
@@ -16,5 +16,5 @@ export const db_config: ConnectionOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   synchronize: true,
-  entities: [User]
+  entities: [User],
 };
