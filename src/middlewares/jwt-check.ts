@@ -3,12 +3,13 @@ import { HttpError } from '../util/errors';
 import jwt from 'jsonwebtoken';
 import { UserService } from '../services/user-service';
 import { Request, Response } from 'express';
+import { jwt_config } from '../config/app-config';
 
 export function jwtCheckMiddleware(req: Request, res: Response, next) {
   const authHeader = req.headers.authorization;
   if (authHeader) {
     const token = authHeader.split(' ')[1];
-    jwt.verify(token, process.env.TOKEN_SECRET, async (err, user) => {
+    jwt.verify(token, jwt_config.secret, async (err, user) => {
       if (err) next(new HttpError(httpErrorStatusCodes.FORBIDDEN, 'access denied'));
       try {
         const userService = new UserService();

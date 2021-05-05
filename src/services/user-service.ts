@@ -3,55 +3,79 @@ import { User } from '../entities/user';
 import { UserRepository } from '../repository/user-repository';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { AppError } from '../util/errors';
+import { AppError, HttpError } from '../util/errors';
+import { jwt_config } from '../config/app-config';
+import { httpErrorStatusCodes } from '../constants/http-statuses';
+import { UserRole } from '../constants/user-roles';
 
 export class UserService {
-  async isEmailTaken(email: string) {
-    const userRepository = getCustomRepository(UserRepository);
-    const user = await userRepository.findByEmail(email);
+  private userRepository: UserRepository;
+
+  public constructor() {
+    this.userRepository = getCustomRepository(UserRepository);
+  }
+
+  private async isEmailTaken(email: string) {
+    const user = await this.userRepository.findByEmail(email);
     if (user == undefined) return false;
     else return true;
   }
 
   async findUser(email: string) {
-    const userRepository = getCustomRepository(UserRepository);
-    return await userRepository.findByEmail(email);
+    return await this.userRepository.findByEmail(email);
   }
 
-  async passwordsMatch(providedPass: string, candidatePass: string): Promise<boolean> {
+  private async passwordsMatch(providedPass: string, candidatePass: string): Promise<boolean> {
     return await bcrypt.compare(providedPass, candidatePass);
   }
 
   async setFreshToken(oldToken: string) {
-    const userRepository = getCustomRepository(UserRepository);
-    const user = await userRepository.findByToken(oldToken);
+    const user = await this.userRepository.findByToken(oldToken);
     if (user != undefined) {
       const newToken = jwt.sign(
         {
           email: user.email,
           userId: user.id,
         },
-        process.env.TOKEN_SECRET
+        jwt_config.secret
       );
-      await userRepository.setNewToken(user.id, newToken);
+      await this.userRepository.setNewToken(user.id, newToken);
       return newToken;
     } else throw new AppError("can't find user by provided token");
   }
 
   async getUserRole(token: string) {
-    const userRepository = getCustomRepository(UserRepository);
-    const user = await userRepository.findByToken(token);
+    const user = await this.userRepository.findByToken(token);
     if (user != undefined) return user.role;
     else throw new AppError("can't find user by provided token");
   }
 
-  async saveLoginToken(userId: number, token: string) {
-    const userRepository = getCustomRepository(UserRepository);
-    await userRepository.setNewToken(userId, token);
+  private async saveLoginToken(userId: number, token: string) {
+    await this.userRepository.setNewToken(userId, token);
   }
 
-  async registerUser(user: User) {
-    const userRepository = getCustomRepository(UserRepository);
-    return await userRepository.save(user);
+  async registerUser(name: string, email: string, password: string) {
+    if (await this.isEmailTaken(email)) throw new HttpError(httpErrorStatusCodes.CONFLICT, 'Email is already taken');
+    let candidate: User = new User(name, email);
+    await candidate.hashPassword(password);
+    candidate.role = UserRole.USER;
+    return await this.userRepository.save(candidate);
+  }
+
+  async loginUser(providedEmail: string, providedPass: string) {
+    const candidate = await this.findUser(providedEmail);
+    if (candidate) {
+      if (await this.passwordsMatch(providedPass, candidate.password)) {
+        const token = jwt.sign(
+          {
+            email: candidate.email,
+            userId: candidate.id,
+          },
+          jwt_config.secret
+        );
+        await this.saveLoginToken(candidate.id, token);
+        return token;
+      } else throw new HttpError(httpErrorStatusCodes.UNAUTHORIZED, 'Wrong password');
+    } else throw new HttpError(httpErrorStatusCodes.FORBIDDEN, "User doesn't exist");
   }
 }

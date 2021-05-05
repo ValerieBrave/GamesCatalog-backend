@@ -18,3 +18,7 @@ export const db_config: ConnectionOptions = {
   synchronize: true,
   entities: [User],
 };
+
+export const jwt_config = {
+  secret: process.env.TOKEN_SECRET,
+};
