@@ -15,6 +15,7 @@ export function jwtCheckMiddleware(req: Request, res: Response, next) {
         const userService = new UserService();
         const fresh = await userService.setFreshToken(token);
         req.headers.authorization = `Bearer ${fresh}`;
+        res.setHeader('token', fresh);
         next();
       } catch (err) {
         next(err);

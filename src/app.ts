@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { db_config } from './/config/app-config';
+import { cloud_config, db_config } from './/config/app-config';
 import { ExpressLoader } from './/loaders/express';
 import { getConnectionManager } from 'typeorm';
 

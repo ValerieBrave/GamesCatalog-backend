@@ -25,7 +25,7 @@ export class UserService {
     return await this.userRepository.findByEmail(email);
   }
 
-  private async passwordsMatch(providedPass: string, candidatePass: string): Promise<boolean> {
+  async passwordsMatch(providedPass: string, candidatePass: string): Promise<boolean> {
     return await bcrypt.compare(providedPass, candidatePass);
   }
 
@@ -41,13 +41,13 @@ export class UserService {
       );
       await this.userRepository.setNewToken(user.id, newToken);
       return newToken;
-    } else throw new AppError("can't find user by provided token");
+    } else throw new AppError("Can't find user by provided token");
   }
 
   async getUserRole(token: string) {
     const user = await this.userRepository.findByToken(token);
     if (user != undefined) return user.role;
-    else throw new AppError("can't find user by provided token");
+    else throw new AppError("Can't find user by provided token");
   }
 
   private async saveLoginToken(userId: number, token: string) {
@@ -77,5 +77,18 @@ export class UserService {
         return token;
       } else throw new HttpError(httpErrorStatusCodes.UNAUTHORIZED, 'Wrong password');
     } else throw new HttpError(httpErrorStatusCodes.FORBIDDEN, "User doesn't exist");
+  }
+
+  async deleteUser(userId: number) {
+    const user = await this.userRepository.findOne(userId);
+    if (!user) throw new HttpError(httpErrorStatusCodes.NOT_FOUND, 'User not found');
+    if (user.role == UserRole.ADMIN) throw new HttpError(httpErrorStatusCodes.FORBIDDEN, "You can't delete admin user");
+    else {
+      try {
+        await this.userRepository.delete(userId);
+      } catch (err) {
+        throw new AppError('Failed to delete this user');
+      }
+    }
   }
 }
