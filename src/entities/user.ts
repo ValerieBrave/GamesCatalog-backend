@@ -1,27 +1,8 @@
-// const EntitySchema = require('typeorm').EntitySchema;
+import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
+import bcrypt from 'bcryptjs';
+import { UserRole } from '../constants/user-roles';
 
-// module.exports = new EntitySchema({
-//   name: 'User',
-//   tableName: 'users',
-//   columns: {
-//     id: { primary: true, type: 'int', generated: true },
-//     name: { type: 'varchar', nullable: false },
-//     email: { type: 'varchar', unique: true },
-//     avatar: { type: 'varchar' },
-//     birthday: { type: 'date', nullable: false },
-//     password: { type: 'varchar', nullable: false },
-//     role: { type: 'varchar', nullable: false },
-//   },
-
-//   //
-// });
-export enum UserRole {
-  ADMIN = "admin",
-  USER = "user"
-}
-
-import { Entity, PrimaryGeneratedColumn, Column, Check, Unique } from "typeorm"
-@Entity()
+@Entity({ name: 'user' })
 @Unique(['email'])
 export class User {
   @PrimaryGeneratedColumn()
@@ -31,18 +12,29 @@ export class User {
   name: string;
 
   @Column('varchar')
-  email:string;
+  email: string;
 
-  @Column('varchar')
+  @Column({ nullable: true, type: 'varchar' })
   avatar: string;
 
-  @Column('date')
+  @Column({ nullable: true, type: 'date' })
   birthday: Date;
 
   @Column('varchar')
   password: string;
 
-  @Column({type:'enum', enum: UserRole, default: UserRole.USER})
-  role: string;
-}
+  @Column({ nullable: true, type: 'varchar' })
+  token: string;
 
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
+  role: string;
+
+  public constructor(name: string, email: string) {
+    this.name = name;
+    this.email = email;
+  }
+
+  public async hashPassword(password: string): Promise<void> {
+    this.password = await bcrypt.hash(password, 10);
+  }
+}
