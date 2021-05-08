@@ -7,7 +7,7 @@ class AuthController {
     try {
       const token = await userService.loginUser(req.body.email, req.body.password);
       res.status(200).json({ token: token });
-    } catch(err) {
+    } catch (err) {
       next(err);
     }
   }
@@ -17,7 +17,7 @@ class AuthController {
     try {
       await userService.registerUser(req.body.name, req.body.email, req.body.password);
       res.status(201).json({ message: 'You can log in now' });
-    } catch(err) {
+    } catch (err) {
       next(err);
     }
   }

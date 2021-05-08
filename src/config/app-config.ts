@@ -22,3 +22,9 @@ export const db_config: ConnectionOptions = {
 export const jwt_config = {
   secret: process.env.TOKEN_SECRET,
 };
+
+export const cloud_config = {
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: 667193892397582,
+  api_secret: process.env.CLOUD_API_SECRET,
+};
