@@ -23,7 +23,8 @@ export class ProfileService {
     else throw new HttpError(httpErrorStatusCodes.NOT_FOUND, 'User profile not found');
   }
 
-  async setNewPassword(token: string, oldPass: string, newPass: string) {
+  async setNewPassword(token: string, oldPass: string, newPass: string, newPassConfirm: string) {
+    if (newPass !== newPassConfirm) throw new HttpError(httpErrorStatusCodes.FORBIDDEN, "New passwords don't match");
     const userService = new UserService();
     let user = await this.userRepository.findByToken(token);
     if (!user) throw new HttpError(httpErrorStatusCodes.NOT_FOUND, 'Cant find user by provided token');
@@ -45,7 +46,6 @@ export class ProfileService {
     if (!user) throw new HttpError(httpErrorStatusCodes.NOT_FOUND, 'Cant find user by provided token');
     await this.profileRepository.updateBirthday(user.id, newBD);
   }
-
 
   async setNewAvatar(token: string, data) {
     let user = await this.userRepository.findByToken(token);

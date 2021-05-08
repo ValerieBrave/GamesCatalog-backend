@@ -29,7 +29,7 @@ class UserController {
     const token = req.headers.authorization.split(' ')[1];
     const profileService = new ProfileService();
     try {
-      await profileService.setNewPassword(token, req.body.oldPass, req.body.newPass);
+      await profileService.setNewPassword(token, req.body.oldPass, req.body.newPass, req.body.newPassConfirm);
       res.status(200).json({ message: 'Your password successfully updated' });
     } catch (err) {
       next(err);
