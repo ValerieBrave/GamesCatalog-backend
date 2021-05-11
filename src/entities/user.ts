@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Unique, JoinTable, ManyToMany } from 'typeorm';
 import bcrypt from 'bcryptjs';
 import { UserRole } from '../constants/user-roles';
+import { Game } from './game';
 
 @Entity({ name: 'user' })
 @Unique(['email'])
@@ -28,6 +29,10 @@ export class User {
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: string;
+
+  @ManyToMany(() => Game, game => game.users, { cascade: true})
+  @JoinTable()
+  games: Game[];
 
   public constructor(name: string, email: string) {
     this.name = name;

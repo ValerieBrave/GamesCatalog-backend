@@ -1,9 +1,9 @@
+import jwt from 'jsonwebtoken';
+import { Request, Response } from 'express';
+import { UserService } from '../services/user-service';
+import { jwt_config } from '../config/app-config';
 import { httpErrorStatusCodes } from '../constants/http-statuses';
 import { HttpError } from '../util/errors';
-import jwt from 'jsonwebtoken';
-import { UserService } from '../services/user-service';
-import { Request, Response } from 'express';
-import { jwt_config } from '../config/app-config';
 
 export function jwtCheckMiddleware(req: Request, res: Response, next) {
   const authHeader = req.headers.authorization;
