@@ -1,12 +1,12 @@
 import { getCustomRepository } from 'typeorm';
-import { User } from '../entities/user';
-import { UserRepository } from '../repository/user-repository';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { AppError, HttpError } from '../util/errors';
 import { jwt_config } from '../config/app-config';
 import { httpErrorStatusCodes } from '../constants/http-statuses';
 import { UserRole } from '../constants/user-roles';
+import { User } from '../entities/user';
+import { UserRepository } from '../repository/user-repository';
 
 export class UserService {
   private userRepository: UserRepository;

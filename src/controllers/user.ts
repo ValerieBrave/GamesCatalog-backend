@@ -36,24 +36,13 @@ class UserController {
     }
   }
 
-  async changeName(req: Request, res: Response, next) {
+  async changePersonalInfo(req: Request, res: Response, next) {
     const token = req.headers.authorization.split(' ')[1];
     const profileService = new ProfileService();
     try {
-      await profileService.setNewName(token, req.body.newName);
-      res.status(200).json({ message: 'Your name successfully updated' });
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  async changeBirthday(req: Request, res: Response, next) {
-    const token = req.headers.authorization.split(' ')[1];
-    const profileService = new ProfileService();
-    try {
-      await profileService.setNewBirthday(token, req.body.newBD);
-      res.status(200).json({ message: 'Your date of birth successfully updated' });
-    } catch (err) {
+      await profileService.setNewPersonalInfo(token, req.body.newName, req.body.newBD);
+      res.status(200).json({message: 'Your personal info was successfully updated'});
+    } catch(err) {
       next(err);
     }
   }
@@ -63,8 +52,8 @@ class UserController {
     const data = req.files['avatar']['data'];
     const profileService = new ProfileService();
     try {
-      await profileService.setNewAvatar(token, data);
-      res.status(200).json({ message: 'Your avatar successfully updated' });
+      const url =await profileService.setNewAvatar(token, data);
+      res.status(200).json({ message: 'Your avatar successfully updated', url: url });
     } catch (err) {
       next(err);
     }

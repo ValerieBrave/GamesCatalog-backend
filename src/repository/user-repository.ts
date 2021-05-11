@@ -11,7 +11,9 @@ export class UserRepository extends Repository<User> {
   }
 
   findByToken(token: string) {
-    return this.createQueryBuilder(this.alias).where('user.token = :token', { token: token }).getOne();
+    return this.createQueryBuilder(this.alias)
+    .leftJoinAndSelect("user.games", "game")
+    .where('user.token = :token', { token: token }).getOne();
   }
 
   findByEmail(email: string) {

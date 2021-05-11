@@ -15,10 +15,6 @@ export function registerRules() {
   ];
 }
 
-export function newNameRules() {
-  return [body('newName').not().isEmpty().bail().isString()];
-}
-
 export function newPasswordRules() {
   return [
     body('oldPass').not().isEmpty().bail().isLength({ min: 6 }),
@@ -27,8 +23,9 @@ export function newPasswordRules() {
   ];
 }
 
-export function newBirthdayRules() {
+export function newInfoRules() {
   return [
+    body('newName').not().isEmpty().bail().isString(),
     body('newBD')
       .not()
       .isEmpty()
@@ -38,8 +35,8 @@ export function newBirthdayRules() {
         const reg = new RegExp('[0-9]{4}-[0-9]{2}-[0-9]{2}');
         if (!value.match(reg)) throw new HttpError(httpErrorStatusCodes.BAD_REQUEST, 'Date is of wrong format');
         return true;
-      }),
-  ];
+      })
+  ]
 }
 
 export function validate(req: Request, res: Response, next) {
