@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToMany, PrimaryColumn } from 'typeorm';
 import { User } from './user';
 
+
 @Entity({ name: 'game' })
 export class Game {
   @PrimaryColumn()

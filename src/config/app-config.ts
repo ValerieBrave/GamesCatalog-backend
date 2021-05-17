@@ -1,7 +1,7 @@
 import { ConnectionOptions } from 'typeorm';
 import dotenv from 'dotenv';
-import { User } from '../entities/user';
-import { Game } from '../entities/game';
+import { User } from "../entities/user";
+import { Game } from "../entities/game";
 
 dotenv.config();
 
@@ -33,7 +33,7 @@ export const cloud_config = {
 export const api_config = {
   api_url: process.env.API_URL,
   headers: {
-    'Client-ID': process.env.TWITCH_CLIENT_SECRET,
-    Authorization: `Bearer ${process.env.TWITCH_APP_TOKEN}`,
+    "Client-ID": process.env.TWITCH_CLIENT_SECRET,
+    "Authorization": `Bearer ${process.env.TWITCH_APP_TOKEN}`,
   },
 };
