@@ -35,8 +35,8 @@ export function newInfoRules() {
         const reg = new RegExp('[0-9]{4}-[0-9]{2}-[0-9]{2}');
         if (!value.match(reg)) throw new HttpError(httpErrorStatusCodes.BAD_REQUEST, 'Date is of wrong format');
         return true;
-      })
-  ]
+      }),
+  ];
 }
 
 export function validate(req: Request, res: Response, next) {

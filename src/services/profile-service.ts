@@ -17,10 +17,16 @@ export class ProfileService {
     this.userRepository = getCustomRepository(UserRepository);
   }
 
-  async getProfile(userId: number) {
-    const info = await this.profileRepository.getProfileInfo(userId);
+  async getProfile(token: string) {
+    const info = await this.profileRepository.getProfileInfo(token);
     if (info) return info;
     else throw new HttpError(httpErrorStatusCodes.NOT_FOUND, 'User profile not found');
+  }
+
+  async getUserGames(token: string) {
+    const user = await this.userRepository.findByToken(token);
+    if (!user) throw new HttpError(httpErrorStatusCodes.NOT_FOUND, 'Cant find user by provided token');
+    return user.games.map((e) => e.id);
   }
 
   async setNewPassword(token: string, oldPass: string, newPass: string, newPassConfirm: string) {
@@ -44,7 +50,9 @@ export class ProfileService {
   async setNewAvatar(token: string, data) {
     const user = await this.userRepository.findByToken(token);
     let outsideResolve = null;
-    const promise = new Promise(resolve => {outsideResolve = resolve});
+    const promise = new Promise((resolve) => {
+      outsideResolve = resolve;
+    });
     if (!user) throw new HttpError(httpErrorStatusCodes.NOT_FOUND, 'Cant find user by provided token');
     try {
       cloudinary.v2.config(cloud_config);

@@ -4,4 +4,4 @@ import { jwtCheckMiddleware } from '../middlewares/jwt-check';
 
 export const gameRouter = express.Router();
 
-gameRouter.post('/like/:id',[jwtCheckMiddleware], GameController.like)
+gameRouter.post('/like/:id', [jwtCheckMiddleware], GameController.like);

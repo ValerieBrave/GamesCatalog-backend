@@ -8,12 +8,12 @@ export class ProfileRepository {
     this.alias = 'user';
   }
 
-  async getProfileInfo(userId: number) {
+  async getProfileInfo(token: string) {
     return await this.manager
       .createQueryBuilder()
       .select(['user.id', 'user.avatar', 'user.name', 'user.email', 'user.birthday'])
       .from(User, this.alias)
-      .where('user.id = :id', { id: userId })
+      .where('user.token = :token', { token: token })
       .getOne();
   }
 

@@ -9,4 +9,4 @@ export const router = express.Router();
 router.use('/auth', authRouter);
 router.use('/user', userRouter);
 router.use('/game', gameRouter);
-router.use('/v4', createProxyMiddleware({ target: 'https://api.igdb.com', changeOrigin: true }))
+router.use('/v4', createProxyMiddleware({ target: 'https://api.igdb.com', changeOrigin: true }));

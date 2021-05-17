@@ -41,7 +41,7 @@ export class UserService {
       );
       await this.userRepository.setNewToken(user.id, newToken);
       return newToken;
-    } else throw new AppError("Can't find user by provided token");
+    } else throw new AppError("SetFreshToken - Can't find user by provided token");
   }
 
   async getUserRole(token: string) {
