@@ -30,7 +30,7 @@ export class User {
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: string;
 
-  @ManyToMany(() => Game, game => game.users, { cascade: true})
+  @ManyToMany(() => Game, (game) => game.users, { cascade: true })
   @JoinTable()
   games: Game[];
 

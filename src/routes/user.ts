@@ -7,7 +7,8 @@ import { newInfoRules, newPasswordRules, validate } from '../middlewares/request
 
 export const userRouter = express.Router();
 
-userRouter.get('/profile/:id', UserController.get);
+userRouter.get('/profile/liked', [jwtCheckMiddleware], UserController.getLikes);
+userRouter.get('/profile', [jwtCheckMiddleware], UserController.get);
 userRouter.put('/profile/password', [jwtCheckMiddleware], newPasswordRules(), validate, UserController.changePassword);
 userRouter.put('/profile/info', [jwtCheckMiddleware], newInfoRules(), validate, UserController.changePersonalInfo);
 userRouter.post('/profile/avatar', [jwtCheckMiddleware], UserController.changeAvatar);

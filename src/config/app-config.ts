@@ -33,7 +33,7 @@ export const cloud_config = {
 export const api_config = {
   api_url: process.env.API_URL,
   headers: {
-    "Client-ID": process.env.TWITCH_CLIENT_SECRET,
-    "Authorization": `Bearer ${process.env.TWITCH_APP_TOKEN}`
-  }
-}
+    'Client-ID': process.env.TWITCH_CLIENT_SECRET,
+    Authorization: `Bearer ${process.env.TWITCH_APP_TOKEN}`,
+  },
+};
