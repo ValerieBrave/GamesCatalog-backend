@@ -24,7 +24,9 @@ export class GameService {
 
   async like(gameId: number, token: string) {
     const user = await this.userRepository.findByToken(token);
+    
     const game = await this.gameRepository.findOne(gameId);
+    console.log('after find game in DB, game = ', game)
     let liked: boolean;
     if (game) {
       //liked => dislike
@@ -40,11 +42,13 @@ export class GameService {
     } else {
       // not in database yet - definitely like
       const gameInfo = (await this.getGameInfo(gameId)).data[0];
+      console.log('after getting game info, info = ', gameInfo)
       const game = new Game(gameInfo.id, gameInfo.name, gameInfo.first_release_date, gameInfo.rating);
       game.users = [user];
       await this.gameRepository.save(game);
       liked = true;
     }
+    console.log('before return, liked = ', liked)
     return liked;
   }
 }
