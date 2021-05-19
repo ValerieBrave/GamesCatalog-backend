@@ -1,9 +1,7 @@
 import { ConnectionOptions } from 'typeorm';
-import dotenv from 'dotenv';
 import { User } from "../entities/user";
 import { Game } from "../entities/game";
 
-dotenv.config();
 
 export const app_config = {
   port: process.env.PORT || process.env.APP_PORT,

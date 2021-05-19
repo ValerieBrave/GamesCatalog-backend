@@ -15,6 +15,15 @@ export class ExpressLoader {
     app.use(bodyParser.json());
     app.use(fileUpload());
     app.use(router);
+	
+	if(process.env.NODE_ENV === 'production') {
+      app.use(express.static(path.join(__dirname, '../../public')))
+      app.get('*', (req, res) => {
+        res.sendFile( 'index.html', {root:`public`})
+      })
+    }
+	
+	
     app.use(handleErrorMiddleware);
     this.server = app.listen(app_config.port, () => {
       console.log(`Server is listening on port ${app_config.port}`);

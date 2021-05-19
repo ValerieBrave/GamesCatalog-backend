@@ -10,7 +10,7 @@ export class Game {
   @Column({ type: 'varchar' })
   name: string;
 
-  @Column()
+  @Column({nullable: true})
   rating: number;
 
   @Column({ type: 'date', nullable: true })

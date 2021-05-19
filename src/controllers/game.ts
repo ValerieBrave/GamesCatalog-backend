@@ -4,6 +4,7 @@ import { AppError } from '../util/errors';
 
 class GameController {
   async like(req: Request, res: Response, next) {
+    console.log('entered game controller')
     const gameService = new GameService();
     const token = req.get('clienttoken').split(' ')[1];
     const gameId: number = parseInt(req.params.id);
