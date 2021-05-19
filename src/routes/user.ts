@@ -3,13 +3,13 @@ import { UserRole } from '../constants/user-roles';
 import { jwtCheckMiddleware } from '../middlewares/jwt-check';
 import { roleCheckMiddleware } from '../middlewares/role-check';
 import UserController from '../controllers/user';
-import { newBirthdayRules, newNameRules, newPasswordRules, validate } from '../middlewares/request-validation';
+import { newInfoRules, newPasswordRules, validate } from '../middlewares/request-validation';
 
 export const userRouter = express.Router();
 
-userRouter.get('/profile/:id', UserController.get);
+userRouter.get('/profile/liked', [jwtCheckMiddleware], UserController.getLikes);
+userRouter.get('/profile', [jwtCheckMiddleware], UserController.get);
 userRouter.put('/profile/password', [jwtCheckMiddleware], newPasswordRules(), validate, UserController.changePassword);
-userRouter.put('/profile/name', [jwtCheckMiddleware], newNameRules(), validate, UserController.changeName);
-userRouter.put('/profile/birthday', [jwtCheckMiddleware], newBirthdayRules(), validate, UserController.changeBirthday);
+userRouter.put('/profile/info', [jwtCheckMiddleware], newInfoRules(), validate, UserController.changePersonalInfo);
 userRouter.post('/profile/avatar', [jwtCheckMiddleware], UserController.changeAvatar);
 userRouter.delete('/delete/:id', [jwtCheckMiddleware, roleCheckMiddleware(UserRole.ADMIN)], UserController.delete);

@@ -1,8 +1,7 @@
 import { ConnectionOptions } from 'typeorm';
-import { User } from '../entities/user';
-import dotenv from 'dotenv';
+import { User } from "../entities/user";
+import { Game } from "../entities/game";
 
-dotenv.config();
 
 export const app_config = {
   port: process.env.PORT || process.env.APP_PORT,
@@ -16,7 +15,7 @@ export const db_config: ConnectionOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   synchronize: true,
-  entities: [User],
+  entities: [User, Game],
 };
 
 export const jwt_config = {
@@ -25,6 +24,14 @@ export const jwt_config = {
 
 export const cloud_config = {
   cloud_name: process.env.CLOUD_NAME,
-  api_key: 667193892397582,
+  api_key: parseInt(process.env.CLOUD_API_KEY),
   api_secret: process.env.CLOUD_API_SECRET,
+};
+
+export const api_config = {
+  api_url: process.env.API_URL,
+  headers: {
+    "Client-ID": process.env.TWITCH_CLIENT_SECRET,
+    "Authorization": `Bearer ${process.env.TWITCH_APP_TOKEN}`,
+  },
 };

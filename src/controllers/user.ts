@@ -5,20 +5,21 @@ import { AppError } from '../util/errors';
 
 class UserController {
   async delete(req: Request, res: Response, next) {
-    const id: number = parseInt(req.params.id);
     const userService = new UserService();
+    const id: number = parseInt(req.params.id);
     try {
       await userService.deleteUser(id);
+      res.status(200).json({ message: 'User deleted' });
     } catch (err) {
       next(err);
     }
   }
 
   async get(req: Request, res: Response, next) {
-    const id: number = parseInt(req.params.id);
     const profileService = new ProfileService();
+    const token = req.get('clienttoken').split(' ')[1];
     try {
-      const info = await profileService.getProfile(id);
+      const info = await profileService.getProfile(token);
       res.status(200).json(info);
     } catch (err) {
       next(new AppError(err.message));
@@ -26,8 +27,8 @@ class UserController {
   }
 
   async changePassword(req: Request, res: Response, next) {
-    const token = req.headers.authorization.split(' ')[1];
     const profileService = new ProfileService();
+    const token = req.get('clienttoken').split(' ')[1];
     try {
       await profileService.setNewPassword(token, req.body.oldPass, req.body.newPass, req.body.newPassConfirm);
       res.status(200).json({ message: 'Your password successfully updated' });
@@ -36,35 +37,35 @@ class UserController {
     }
   }
 
-  async changeName(req: Request, res: Response, next) {
-    const token = req.headers.authorization.split(' ')[1];
+  async changePersonalInfo(req: Request, res: Response, next) {
     const profileService = new ProfileService();
+    const token = req.get('clienttoken').split(' ')[1];
     try {
-      await profileService.setNewName(token, req.body.newName);
-      res.status(200).json({ message: 'Your name successfully updated' });
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  async changeBirthday(req: Request, res: Response, next) {
-    const token = req.headers.authorization.split(' ')[1];
-    const profileService = new ProfileService();
-    try {
-      await profileService.setNewBirthday(token, req.body.newBD);
-      res.status(200).json({ message: 'Your date of birth successfully updated' });
+      await profileService.setNewPersonalInfo(token, req.body.newName, req.body.newBD);
+      res.status(200).json({ message: 'Your personal info was successfully updated' });
     } catch (err) {
       next(err);
     }
   }
 
   async changeAvatar(req: Request, res: Response, next) {
-    const token = req.headers.authorization.split(' ')[1];
-    const data = req.files['avatar']['data'];
     const profileService = new ProfileService();
+    const token = req.get('clienttoken').split(' ')[1];
+    const data = req.files['avatar']['data'];
     try {
-      await profileService.setNewAvatar(token, data);
-      res.status(200).json({ message: 'Your avatar successfully updated' });
+      const url = await profileService.setNewAvatar(token, data);
+      res.status(200).json({ message: 'Your avatar successfully updated', url: url });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async getLikes(req: Request, res: Response, next) {
+    const profileService = new ProfileService();
+    const token = req.get('clienttoken').split(' ')[1];
+    try {
+      const likes = await profileService.getUserGames(token);
+      res.status(200).json({ likes: likes });
     } catch (err) {
       next(err);
     }

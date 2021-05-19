@@ -15,10 +15,6 @@ export function registerRules() {
   ];
 }
 
-export function newNameRules() {
-  return [body('newName').not().isEmpty().bail().isString()];
-}
-
 export function newPasswordRules() {
   return [
     body('oldPass').not().isEmpty().bail().isLength({ min: 6 }),
@@ -27,8 +23,9 @@ export function newPasswordRules() {
   ];
 }
 
-export function newBirthdayRules() {
+export function newInfoRules() {
   return [
+    body('newName').not().isEmpty().bail().isString(),
     body('newBD')
       .not()
       .isEmpty()
